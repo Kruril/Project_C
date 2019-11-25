@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "main_Project.h"
+#include "headers/structure.h"
+#include "headers/menu.h"
 
 main()
 {
@@ -10,14 +11,14 @@ main()
 
     // Ouverture des différents fichiers
     FILE *fMedecin;
-    fMedecin = fopen("Donnees/Medecin.dat","a+");
+    fMedecin = fopen("Donnees/Medecin.dat","r+");
 
     /* Lecture du fichier Medecin
        Le fichier contient le nom du medecin, sa spécialité et son numéro Inami */
     fscanf(fMedecin,"%2d",&nbMed);
     // Déclaration des structures
     medecin med[nbMed];
-    printf("%2d\n",nbMed);
+
     for ( i = 0; i < nbMed; i++)
     {
         fscanf(fMedecin,"%20s%20s%10s",med[i].nom,med[i].specialite,med[i].numInami);
@@ -30,7 +31,7 @@ main()
         MenuPrincipal();
         printf("Numero de l'option : ");
         scanf("%2d",&option);
-        system("cls");
+        system("clear");
     } while (option < 0 || option > 4);
 
     if (option == 1)
@@ -64,12 +65,4 @@ main()
     
     printf("Fin du Programme");
     
-}
-
-void MenuPrincipal()
-{
-    printf("-----------------------------------------------------------------------------------\n");
-    printf("|                 1. Prendre rendez-vous | 2. Voir les horaires                   |\n");
-    printf("|                 3. Liste medecin       | 4. Annulation d'un rendez-vous         |\n");
-    printf("-----------------------------------------------------------------------------------\n");
 }
