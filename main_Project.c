@@ -3,11 +3,12 @@
 #include <string.h>
 #include "headers/structure.h"
 #include "headers/menu.h"
+#include "headers/medecin.h"
 
 main()
 {
     // Déclaration des variables
-    int option, nbMed,i;
+    int option, nbMed,i, value;
 
     // Ouverture des différents fichiers
     FILE *fMedecin;
@@ -43,12 +44,20 @@ main()
         //code 
     }
     else if (option == 3)
-    {
-        for ( i = 0; i < nbMed; i++)
+    { 
+        do
+        {
+            for ( i = 0; i < nbMed; i++)
         {
             printf("%02d %-21s\n",(i+1),med[i].nom);
         }
-        
+        printf("\n");
+        VuMedecin();
+        printf("Choix d'une option :\n");
+        scanf("%2d",&value);
+        } while (value < 0 || value > 4);
+        choixOption(value);
+                
     }
     else if (option == 4)
     {
@@ -63,6 +72,6 @@ main()
     
     
     
-    printf("Fin du Programme");
+    printf("Fin du Programme\n");
     
 }

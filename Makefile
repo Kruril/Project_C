@@ -1,8 +1,8 @@
-SOURCES=$(wildcard *.c)
+# SOURCES=$(find . -name "*.c")
 INCLUDES=$(wildcard *.h)
 
-proj.out: $(SOURCES) $(INCLUDES)
-	gcc -g -flto -Wall -Werror -Wextra -fsanitize=address -fsanitize=undefined $(SOURCES) -o proj.out  
+proj.out:  $(INCLUDES) 
+	 gcc $(find . -name "*.c") -o proj.out 
 
 test: proj.out
 	./proj.out
