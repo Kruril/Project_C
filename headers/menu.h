@@ -1,4 +1,4 @@
 #pragma once
 
-void MenuPrincipal();
+int MenuPrincipal();
 void VuMedecin();

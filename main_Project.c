@@ -29,10 +29,7 @@ int main()
     // Affichage du menu principal et Scan de l'option
     do
     {
-        MenuPrincipal();
-        printf("Numero de l'option : ");
-        scanf("%2d",&option);
-        system("clear");
+        option = MenuPrincipal();
     } while (option < 0 || option > 4);
 
     if (option == 1)

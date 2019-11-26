@@ -1,12 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void MenuPrincipal()
+int MenuPrincipal()
 {
+    int option;
     printf("-----------------------------------------------------------------------------------\n");
     printf("|                 1. Prendre rendez-vous | 2. Voir les horaires                   |\n");
     printf("|                 3. Liste medecin       | 4. Annulation d'un rendez-vous         |\n");
     printf("-----------------------------------------------------------------------------------\n");
+    printf("Numero de l'option : ");
+    scanf("%2d",&option);
+    system("clear");
+    return option;
 }
 
 void VuMedecin()
