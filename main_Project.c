@@ -5,7 +5,7 @@
 #include "headers/menu.h"
 #include "headers/medecin.h"
 
-main()
+int main()
 {
     // Déclaration des variables
     int option, nbMed,i, value;
@@ -73,5 +73,6 @@ main()
     
     
     printf("Fin du Programme\n");
+    return 0;
     
 }
