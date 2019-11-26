@@ -12,13 +12,18 @@ bool run()
     int option, nbMed, i, value;
 
     // Ouverture des différents fichiers
-    FILE *fMedecin /*, *fPatient*/;
+    FILE *fMedecin , *fPatient;
     fMedecin = fopen("Donnees/Medecin.dat", "r+");
-    // fPatient = fopen("Save/patient.res", "a+");
+    fPatient = fopen("Save/patient.res", "a+");
 
     /* Lecture du fichier Medecin
        Le fichier contient le nom du medecin, sa spécialité et son numéro Inami */
     fscanf(fMedecin, "%2d", &nbMed);
+
+    //A SUPPRIMER PAR LA SUITE
+    fprintf(fPatient,"blabla");
+
+
     // Déclaration des structures
     medecin med[nbMed];
 
@@ -34,7 +39,7 @@ bool run()
 
     if (option == 1)
     {
-        // code
+        PrendRendVous(nbMed, med);
     }
     else if (option == 2)
     {

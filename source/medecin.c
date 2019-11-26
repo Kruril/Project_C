@@ -20,3 +20,22 @@ void listeMedecin(int nbMed, medecin med[])
     }
     printf("\n");
 }
+
+void PrendRendVous(int nbMed, medecin med[])
+{
+    int numMed;
+    char nom[21];
+    listeMedecin(nbMed, med);
+    printf("Pour quel medecin prendre le rendez-vous?\n");
+    do
+    {
+        scanf("%2d", &numMed);
+        if (numMed < 0 || numMed > nbMed)
+        {
+            printf("Numéro du medecin invalide recommancer\n");
+        }
+        
+    } while (numMed < 0 || numMed > nbMed);
+   
+    *nom = med[numMed-1].nom;
+}
