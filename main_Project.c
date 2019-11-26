@@ -1,75 +1,17 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include "headers/structure.h"
-#include "headers/menu.h"
-#include "headers/medecin.h"
+#include <stdbool.h>
+#include "headers/run.h"
 
 int main()
 {
-    // Déclaration des variables
-    int option, nbMed,i, value;
+    bool running = true;
 
-    // Ouverture des différents fichiers
-    FILE *fMedecin;
-    fMedecin = fopen("Donnees/Medecin.dat","r+");
-
-    /* Lecture du fichier Medecin
-       Le fichier contient le nom du medecin, sa spécialité et son numéro Inami */
-    fscanf(fMedecin,"%2d",&nbMed);
-    // Déclaration des structures
-    medecin med[nbMed];
-
-    for ( i = 0; i < nbMed; i++)
+    while (running)
     {
-        fscanf(fMedecin,"%20s%20s%10s",med[i].nom,med[i].specialite,med[i].numInami);
+        running = run();
     }
 
-
-    // Affichage du menu principal et Scan de l'option
-    do
-    {
-        option = MenuPrincipal();
-    } while (option < 0 || option > 4);
-
-    if (option == 1)
-    {
-        // code
-    }
-    else if (option == 2)
-    {
-        //code 
-    }
-    else if (option == 3)
-    { 
-        do
-        {
-            for ( i = 0; i < nbMed; i++)
-        {
-            printf("%02d %-21s\n",(i+1),med[i].nom);
-        }
-        printf("\n");
-        VuMedecin();
-        printf("Choix d'une option :\n");
-        scanf("%2d",&value);
-        } while (value < 0 || value > 4);
-        choixOption(value);
-                
-    }
-    else if (option == 4)
-    {
-        /* code */
-    }
-    else if (option == 0)
-    {
-        /* code */
-    }
-    
-    
-    
-    
-    
     printf("Fin du Programme\n");
     return 0;
-    
 }

@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "headers/structure.h"
+#include "headers/medecin.h"
 
 int MenuPrincipal()
 {
@@ -14,10 +16,15 @@ int MenuPrincipal()
     return option;
 }
 
-void VuMedecin()
+int VuMedecin(int nbMed, medecin med[])
 {
+    listeMedecin(nbMed, med);
+    int value;
     printf("-----------------------------------------------------------------------------------\n");
     printf("|             1. Voir la liste des patients | 2. Ajouter un medecin               |\n");
     printf("|             3. Information sur le medecin | 4. retour au menu principal         |\n");
     printf("-----------------------------------------------------------------------------------\n");
+    printf("Choix d'une option :\n");
+    scanf("%2d", &value);
+    return value;
 }
