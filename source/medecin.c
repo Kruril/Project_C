@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include "headers/structure.h"
 
 
@@ -11,31 +13,40 @@ void choixOption( int value)
     }
 }
 
-void listeMedecin(int nbMed, medecin med[])
+void listeMedecin(int nbMed, medecin Mdeb, medecin Mcurant)
 {
     int i;
+    printf("Num |         Nom          | Specialite\n");
+    Mcurant = Mdeb;
     for (i = 0; i < nbMed; i++)
     {
-        printf("%02d %-21s\n", (i + 1), med[i].nom);
+        printf(" %02d | %-21s| %-21s\n", (i + 1), Mcurant.nom
+        , Mcurant.specialite);
+        Mcurant = *Mcurant.suivant;
     }
     printf("\n");
 }
 
-void PrendRendVous(int nbMed, medecin med[])
+void PrendRendVous(int nbMed, medecin Mdeb, medecin Mcurant)
 {
-    int numMed;
-    char nom[21];
-    listeMedecin(nbMed, med);
-    printf("Pour quel medecin prendre le rendez-vous?\n");
+    char numMed[20];
+    int num ;
+    
+    listeMedecin(nbMed, Mdeb, Mcurant);
+    printf("Numero du medecin pour prendre le rendez-vous?\n");
     do
     {
-        scanf("%2d", &numMed);
-        if (numMed < 0 || numMed > nbMed)
+        scanf("%s", numMed);
+        num = atoi(numMed);
+        if (num == nbMed + 1)
+        {
+            return;
+        }
+        if (num < 1 || num > nbMed )
         {
             printf("Numéro du medecin invalide recommancer\n");
         }
         
-    } while (numMed < 0 || numMed > nbMed);
-   
-    *nom = med[numMed-1].nom;
+
+    } while (num < 1 || num > nbMed);
 }

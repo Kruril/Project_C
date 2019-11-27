@@ -9,37 +9,57 @@
 bool run()
 {
     // Déclaration des variables
-    int option, nbMed, i, value;
+    int option, nbMed = 0, i, value;
 
     // Ouverture des différents fichiers
-    FILE *fMedecin , *fPatient;
-    fMedecin = fopen("Donnees/Medecin.dat", "r+");
-    fPatient = fopen("Save/patient.res", "a+");
+    FILE *fMedecin , *fPatient, *fRendezVous;
+    fMedecin = fopen("Donnees/Medecin.dat", "a+");
+    fPatient = fopen("Donnees/patient.dat", "a+");
+    fRendezVous = fopen("Save/rendez_vous.res", "a+");
 
     /* Lecture du fichier Medecin
-       Le fichier contient le nom du medecin, sa spécialité et son numéro Inami */
-    fscanf(fMedecin, "%2d", &nbMed);
+       Le fichier contient le nom du medecin, sa spécialité, son numéro Inami et num GSM */
 
     //A SUPPRIMER PAR LA SUITE
     fprintf(fPatient,"blabla");
-
+    fprintf(fRendezVous, "blabla");
 
     // Déclaration des structures
-    medecin med[nbMed];
+    medecin *Mdeb, *Mcurant, *Msuivant;
+    
+    Mdeb = malloc(sizeof(medecin));
+    Mcurant = Mdeb;
+    fscanf(fMedecin,"%20s",Mcurant->nom);
 
-    for (i = 0; i < nbMed; i++)
+    while (!feof(fMedecin))
     {
-        fscanf(fMedecin, "%20s%20s%10s", med[i].nom, med[i].specialite, med[i].numInami);
+        fscanf(fMedecin, "%20s%10s%10s", Mcurant->specialite,Mcurant->numInami,Mcurant->numGSM);
+        Msuivant = malloc(sizeof(medecin));
+        Mcurant->suivant = Msuivant;
+        nbMed++;
+        Mcurant = Msuivant;
+        fscanf(fMedecin, "%20s", Mcurant->nom);
     }
+
+    // Mise à Null du dernier element
+    Mcurant = Mdeb;
+    for ( i = 0; i < nbMed; i++)
+    {
+        Mcurant = Mcurant->suivant;
+    }
+    Mcurant->suivant = NULL;
+    // free(Msuivant);
+    
+
     // Affichage du menu principal et Scan de l'option
     do
     {
         option = MenuPrincipal();
-    } while (option < 0 || option > 4);
+    } while (option < 0 || option > 5);
 
     if (option == 1)
     {
-        PrendRendVous(nbMed, med);
+        PrendRendVous(nbMed, *Mdeb, *Mcurant);
     }
     else if (option == 2)
     {
@@ -49,7 +69,7 @@ bool run()
     {
         do
         {
-            value = VuMedecin(nbMed, med);
+            value = VuMedecin(nbMed, *Mdeb, *Mcurant);
         } while (value < 0 || value > 4);
         choixOption(value);
     }
@@ -57,7 +77,7 @@ bool run()
     {
         /* code */
     }
-    else if (option == 0)
+    else if (option == 5)
     {
         return false;
     }

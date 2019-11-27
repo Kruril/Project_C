@@ -16,9 +16,9 @@ int MenuPrincipal()
     return option;
 }
 
-int VuMedecin(int nbMed, medecin med[])
+int VuMedecin(int nbMed, medecin Mdeb, medecin Mcurant)
 {
-    listeMedecin(nbMed, med);
+    listeMedecin(nbMed, Mdeb, Mcurant);
     int value;
     printf("-----------------------------------------------------------------------------------\n");
     printf("|             1. Voir la liste des patients | 2. Ajouter un medecin               |\n");

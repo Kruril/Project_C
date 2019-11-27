@@ -26,5 +26,6 @@ clean:
 
 test: $(PROJECT).out
 	./$(PROJECT).out
+	
 
 -include $(SOURCES:.c=.d)
