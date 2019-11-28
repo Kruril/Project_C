@@ -83,7 +83,7 @@ bool run()
         Pcurant = Pcurant->suivant;
     }
     Pcurant->suivant = NULL;
-    // free(Psuivant);
+    free(Psuivant);
 
     // ***************************************************************************************************
 

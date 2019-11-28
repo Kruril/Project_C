@@ -15,19 +15,19 @@ typedef struct patient
     struct patient *suivant;
 } patient;
 
+typedef struct jours
+{
+    int heure[8], minutes[3];
+} jours;
+
 typedef struct horaire
 {
     /*heure prise de rendez-vous toutes les 30 minutes*/
     // char date[11];
     // nbConsultation = 14 par default car 14 consultation par jour max 9h->12h
     // 13h-> 17h 
-    int mois,annee, nbConsultation;
-    struct jour jour[8];
+    int mois,annee /*, nbConsultation*/;
+    struct jours jour[8];
     struct horaire *suivant;
 } horaire;
-
-typedef struct jour
-{
-    int heure[8], minutes[3];
-};
 
