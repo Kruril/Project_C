@@ -1,4 +1,4 @@
 #pragma once
 
 int MenuPrincipal();
-int VuMedecin(int, struct medecin, struct medecin);
+int VuMedecin(int, struct medecin*, struct medecin*);

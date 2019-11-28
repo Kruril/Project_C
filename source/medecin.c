@@ -13,21 +13,21 @@ void choixOption( int value)
     }
 }
 
-void listeMedecin(int nbMed, medecin Mdeb, medecin Mcurant)
+void listeMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
     int i;
     printf("Num |         Nom          | Specialite\n");
     Mcurant = Mdeb;
-    for (i = 0; i < nbMed; i++)
+    for (i = 1; i <= nbMed; i++)
     {
-        printf(" %02d | %-21s| %-21s\n", (i + 1), Mcurant.nom
-        , Mcurant.specialite);
-        Mcurant = *Mcurant.suivant;
+        printf(" %02d | %-21s| %-21s\n", i, Mcurant->nom
+        , Mcurant->specialite);
+        Mcurant = Mcurant->suivant;
     }
     printf("\n");
 }
 
-void PrendRendVous(int nbMed, medecin Mdeb, medecin Mcurant)
+void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
     char numMed[20];
     int num ;
@@ -49,4 +49,6 @@ void PrendRendVous(int nbMed, medecin Mdeb, medecin Mcurant)
         
 
     } while (num < 1 || num > nbMed);
+
+    
 }

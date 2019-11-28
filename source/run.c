@@ -9,7 +9,7 @@
 bool run()
 {
     // Déclaration des variables
-    int option, nbMed = 0, i, value;
+    int option, nbMed = 0, i, value, nbPat=0;
 
     // Ouverture des différents fichiers
     FILE *fMedecin , *fPatient, *fRendezVous;
@@ -17,12 +17,14 @@ bool run()
     fPatient = fopen("Donnees/patient.dat", "a+");
     fRendezVous = fopen("Save/rendez_vous.res", "a+");
 
+    //A SUPPRIMER PAR LA SUITE
+    fprintf(fRendezVous, "blabla");
+
+    // ***************************************************************************************************
     /* Lecture du fichier Medecin
        Le fichier contient le nom du medecin, sa spécialité, son numéro Inami et num GSM */
+    // ***************************************************************************************************
 
-    //A SUPPRIMER PAR LA SUITE
-    fprintf(fPatient,"blabla");
-    fprintf(fRendezVous, "blabla");
 
     // Déclaration des structures
     medecin *Mdeb, *Mcurant, *Msuivant;
@@ -43,13 +45,47 @@ bool run()
 
     // Mise à Null du dernier element
     Mcurant = Mdeb;
-    for ( i = 0; i < nbMed; i++)
+    for ( i = 1; i < nbMed; i++)
     {
         Mcurant = Mcurant->suivant;
     }
     Mcurant->suivant = NULL;
-    // free(Msuivant);
+    free(Msuivant);
+
+    // **************************************************************************************************
+    /* Lecture du fichier Patient
+       Le fichier contient le nom du patient, son prenom, son numéro GSM, le nom de son medecin , 
+       son num registre nationnal et son code postal  */
+    // **************************************************************************************************
     
+    // Déclaration des structures
+    patient *Pdeb, *Pcurant, *Psuivant;
+
+    Pdeb = malloc(sizeof(patient));
+    Pcurant = Pdeb;
+    fscanf(fPatient, "%20s", Pcurant->nom);
+
+    while (!feof(fPatient))
+    {
+        fscanf(fPatient, "%20s%10s%20s%11s%4d",Pcurant->prenom,Pcurant->numGSM,Pcurant->nomMedecin,
+        Pcurant->idRegistre,&Pcurant->codePostal);
+        Psuivant = malloc(sizeof(patient));
+        Pcurant->suivant = Psuivant;
+        nbPat++;
+        Pcurant = Psuivant;
+        fscanf(fPatient, "%20s", Pcurant->nom);
+    }
+
+    // Mise à Null du dernier element
+    Pcurant = Pdeb;
+    for (i = 1; i < nbPat; i++)
+    {
+        Pcurant = Pcurant->suivant;
+    }
+    Pcurant->suivant = NULL;
+    // free(Psuivant);
+
+    // ***************************************************************************************************
 
     // Affichage du menu principal et Scan de l'option
     do
@@ -59,7 +95,7 @@ bool run()
 
     if (option == 1)
     {
-        PrendRendVous(nbMed, *Mdeb, *Mcurant);
+        PrendRendVous(nbMed, Mdeb, Mcurant);
     }
     else if (option == 2)
     {
@@ -69,7 +105,7 @@ bool run()
     {
         do
         {
-            value = VuMedecin(nbMed, *Mdeb, *Mcurant);
+            value = VuMedecin(nbMed, Mdeb, Mcurant);
         } while (value < 0 || value > 4);
         choixOption(value);
     }
@@ -79,7 +115,11 @@ bool run()
     }
     else if (option == 5)
     {
+        free(Mdeb);
+        free(Pdeb);
         return false;
     }
+    free(Mdeb);
+    free(Pdeb);
     return true;
 }
