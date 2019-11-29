@@ -9,8 +9,8 @@
 bool run()
 {
     // Déclaration des variables
-    int option, nbMed = 0, i,value, nbPat=0;
-    
+    int option, nbMed = 0, i, value, nbPat = 0;
+
     // Ouverture des différents fichiers
     FILE *fMedecin, *fPatient, *fRendezVous;
     fMedecin = fopen("Donnees/Medecin.dat", "a+");
@@ -92,33 +92,33 @@ bool run()
         option = MenuPrincipal();
     } while (option < 0 || option > 5);
 
-    if (option == 1)
+    switch (option)
     {
+    case 1:
         PrendRendVous(nbMed, Mdeb, Mcurant);
-    }
-    else if (option == 2)
-    {
+    case 2:
         //code
-    }
-    else if (option == 3)
-    {
+        break;
+    case 3:
         do
         {
             value = VuMedecin(nbMed, Mdeb, Mcurant);
         } while (value < 0 || value > 4);
         choixOption(value);
-    }
-    else if (option == 4)
-    {
-        /* code */
-    }
-    else if (option == 5)
-    {
+    case 4:
+        //code
+        break;
+    case 5:
         free(Mdeb);
+        free(Mcurant);
         free(Pdeb);
+        free(Pcurant);
         return false;
     }
+
     free(Mdeb);
+    free(Mcurant);
     free(Pdeb);
+    free(Pcurant);
     return true;
 }
