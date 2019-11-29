@@ -44,7 +44,7 @@ void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
         }
         if (num < 1 || num > nbMed )
         {
-            printf("Numéro du medecin invalide recommancer\n");
+            printf("Numéro du medecin invalide recommencer\n");
         }
         
 

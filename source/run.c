@@ -9,10 +9,10 @@
 bool run()
 {
     // Déclaration des variables
-    int option, nbMed = 0, i, value, nbPat=0;
-
+    int option, nbMed = 0, i,value, nbPat=0;
+    
     // Ouverture des différents fichiers
-    FILE *fMedecin , *fPatient, *fRendezVous;
+    FILE *fMedecin, *fPatient, *fRendezVous;
     fMedecin = fopen("Donnees/Medecin.dat", "a+");
     fPatient = fopen("Donnees/patient.dat", "a+");
     fRendezVous = fopen("Save/rendez_vous.res", "a+");
@@ -25,17 +25,16 @@ bool run()
        Le fichier contient le nom du medecin, sa spécialité, son numéro Inami et num GSM */
     // ***************************************************************************************************
 
-
     // Déclaration des structures
     medecin *Mdeb, *Mcurant, *Msuivant;
-    
+
     Mdeb = malloc(sizeof(medecin));
     Mcurant = Mdeb;
-    fscanf(fMedecin,"%20s",Mcurant->nom);
+    fscanf(fMedecin, "%20s", Mcurant->nom);
 
     while (!feof(fMedecin))
     {
-        fscanf(fMedecin, "%20s%10s%10s", Mcurant->specialite,Mcurant->numInami,Mcurant->numGSM);
+        fscanf(fMedecin, "%20s%10s%10s", Mcurant->specialite, Mcurant->numInami, Mcurant->numGSM);
         Msuivant = malloc(sizeof(medecin));
         Mcurant->suivant = Msuivant;
         nbMed++;
@@ -45,7 +44,7 @@ bool run()
 
     // Mise à Null du dernier element
     Mcurant = Mdeb;
-    for ( i = 1; i < nbMed; i++)
+    for (i = 1; i < nbMed; i++)
     {
         Mcurant = Mcurant->suivant;
     }
@@ -57,7 +56,7 @@ bool run()
        Le fichier contient le nom du patient, son prenom, son numéro GSM, le nom de son medecin , 
        son num registre nationnal et son code postal  */
     // **************************************************************************************************
-    
+
     // Déclaration des structures
     patient *Pdeb, *Pcurant, *Psuivant;
 
@@ -67,8 +66,8 @@ bool run()
 
     while (!feof(fPatient))
     {
-        fscanf(fPatient, "%20s%10s%20s%11s%4d",Pcurant->prenom,Pcurant->numGSM,Pcurant->nomMedecin,
-        Pcurant->idRegistre,&Pcurant->codePostal);
+        fscanf(fPatient, "%20s%10s%20s%11s%4d", Pcurant->prenom, Pcurant->numGSM, Pcurant->nomMedecin,
+               Pcurant->idRegistre, &Pcurant->codePostal);
         Psuivant = malloc(sizeof(patient));
         Pcurant->suivant = Psuivant;
         nbPat++;
