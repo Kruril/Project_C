@@ -9,7 +9,7 @@
 bool run()
 {
     // Déclaration des variables
-    int option, nbMed = 0, i, value, nbPat = 0;
+    int option, nbMed = 0, i, value, nbPat = 0, nbRed = 0;
 
     // Ouverture des différents fichiers
     FILE *fMedecin, *fPatient, *fRendezVous;
@@ -51,6 +51,8 @@ bool run()
     Mcurant->suivant = NULL;
     free(Msuivant);
 
+    // ***************************************************************************************************
+
     // **************************************************************************************************
     /* Lecture du fichier Patient
        Le fichier contient le nom du patient, son prenom, son numéro GSM, le nom de son medecin , 
@@ -83,6 +85,42 @@ bool run()
     }
     Pcurant->suivant = NULL;
     free(Psuivant);
+
+    // ***************************************************************************************************
+
+    // **************************************************************************************************
+    /* Lecture du fichier RendezVous
+       Le fichier contient le nom du medecin, le nom du patient, son prenom, la date de la consultation,
+       et l'heure du rendez-vous */
+    // **************************************************************************************************
+
+    // Déclaration des structures
+    rendezvous *Rdeb, *Rcurant, *Rsuivant;
+
+    Rdeb = malloc(sizeof(rendezvous));
+    Rcurant = Rdeb;
+
+    fscanf(fRendezVous, "%20s", Rcurant->nomMedecin);
+
+    while (!feof(fRendezVous))
+    {
+        fscanf(fRendezVous, "%20s%20s%2d%2d%4d%2d%2d", Rcurant->nomPatient, Rcurant->prenomPatient,
+               &Rcurant->jour, &Rcurant->mois, &Rcurant->annee, &Rcurant->heure, &Rcurant->minutes);
+        Rsuivant = malloc(sizeof(rendezvous));
+        Rcurant->suivant = Rsuivant;
+        nbRed++;
+        Rcurant = Rsuivant;
+        fscanf(fRendezVous, "%20s", Rcurant->nomMedecin);
+    }
+
+    // Mise à Null du dernier element
+    Rcurant = Rdeb;
+    for (i = 1; i < nbRed; i++)
+    {
+        Rcurant = Rcurant->suivant;
+    }
+    Rcurant->suivant = NULL;
+    // free(Rsuivant);
 
     // ***************************************************************************************************
 
@@ -120,5 +158,7 @@ bool run()
     free(Mcurant);
     free(Pdeb);
     free(Pcurant);
+    free(Rdeb);
+    // free(Rcurant);
     return true;
 }

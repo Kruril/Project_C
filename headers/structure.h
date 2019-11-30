@@ -3,7 +3,6 @@
 typedef struct medecin
 {
     char nom[21], specialite[21], numInami[11], numGSM[11];
-    struct rendezvous *rendezvous;
     struct medecin *suivant;
 
 } medecin;
@@ -17,7 +16,7 @@ typedef struct patient
 
 typedef struct rendezvous
 {
-    int jour,mois,annee,heure, minutes;
-    char nomPatient[21], prenomPatient[21];
+    int jour, mois, annee, heure, minutes;
+    char nomPatient[21], prenomPatient[21], nomMedecin[21];
     struct rendezvous *suivant;
 } rendezvous;
