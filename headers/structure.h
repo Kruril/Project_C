@@ -1,8 +1,14 @@
 #pragma once
 
+typedef struct horaire
+{
+    int heureDeb[8], heureFin[8];
+}horaire;
+
 typedef struct medecin
 {
     char nom[21], specialite[21], numInami[11], numGSM[11];
+    struct horaire horaire;
     struct medecin *suivant;
 
 } medecin;

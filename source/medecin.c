@@ -4,8 +4,7 @@
 #include <ctype.h>
 #include "headers/structure.h"
 
-
-void choixOption( int value)
+void optionMedecin(int value)
 {
     if (value == 1)
     {
@@ -16,12 +15,12 @@ void choixOption( int value)
 void listeMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
     int i;
-    printf("Num |         Nom          | Specialite\n");
+    printf("Num |         Nom          |      Specialite      |\n");
+    printf("----|----------------------|----------------------|\n");
     Mcurant = Mdeb;
     for (i = 1; i <= nbMed; i++)
     {
-        printf(" %02d | %-21s| %-21s\n", i, Mcurant->nom
-        , Mcurant->specialite);
+        printf(" %02d | %-21s| %-21s|\n", i, Mcurant->nom, Mcurant->specialite);
         Mcurant = Mcurant->suivant;
     }
     printf("\n");
@@ -30,8 +29,8 @@ void listeMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
 void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
     char numMed[20];
-    int num ;
-    
+    int num;
+
     listeMedecin(nbMed, Mdeb, Mcurant);
     printf("Numero du medecin pour prendre le rendez-vous?\n");
     do
@@ -42,13 +41,10 @@ void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
         {
             return;
         }
-        if (num < 1 || num > nbMed )
+        if (num < 1 || num > nbMed)
         {
             printf("Numéro du medecin invalide recommencer\n");
         }
-        
 
     } while (num < 1 || num > nbMed);
-
-    
 }

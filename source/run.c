@@ -3,22 +3,21 @@
 #include <string.h>
 #include <stdbool.h>
 #include "headers/structure.h"
-#include "headers/menu.h"
 #include "headers/medecin.h"
+#include "headers/menu.h"
+#include "headers/horaires.h"
 
 bool run()
 {
     // Déclaration des variables
-    int option, nbMed = 0, i, value, nbPat = 0, nbRed = 0;
+    int option, nbMed = 0, i, j, value, nbPat = 0, nbRed = 0, jourHoraire = 7;
 
     // Ouverture des différents fichiers
-    FILE *fMedecin, *fPatient, *fRendezVous;
+    FILE *fMedecin, *fPatient, *fRendezVous, *fHoraire;
     fMedecin = fopen("Donnees/Medecin.dat", "a+");
     fPatient = fopen("Donnees/patient.dat", "a+");
     fRendezVous = fopen("Save/rendez_vous.res", "a+");
-
-    //A SUPPRIMER PAR LA SUITE
-    fprintf(fRendezVous, "blabla");
+    fHoraire = fopen("Donnees/Horaires.dat", "a+");
 
     // ***************************************************************************************************
     /* Lecture du fichier Medecin
@@ -120,7 +119,26 @@ bool run()
         Rcurant = Rcurant->suivant;
     }
     Rcurant->suivant = NULL;
-    // free(Rsuivant);
+    free(Rsuivant);
+
+    // ***************************************************************************************************
+
+    // ***************************************************************************************************
+    /* Lecture du fichier Horaire
+       Le fichier comprend le nom du medecin et 7 horaires pour chauque jour de la semaine */
+    // ***************************************************************************************************
+
+    char nomMedecin[21];
+    Mcurant = Mdeb;
+    for (i = 1; i <= nbMed; i++)
+    {
+        fscanf(fHoraire, "%20s", nomMedecin);
+        for (j = 1; j <= jourHoraire; j++)
+        {
+            fscanf(fHoraire, "%2d%2d", &Mcurant->horaire.heureDeb[j], &Mcurant->horaire.heureFin[j]);
+        }
+        Mcurant = Mcurant->suivant;
+    }
 
     // ***************************************************************************************************
 
@@ -128,29 +146,39 @@ bool run()
     do
     {
         option = MenuPrincipal();
-    } while (option < 0 || option > 5);
+    } while (option < 1 || option > 6);
 
     switch (option)
     {
     case 1:
         PrendRendVous(nbMed, Mdeb, Mcurant);
+        break;
     case 2:
-        //code
+        do
+        {
+            value = MenuHoraire();
+        } while (value < 1 || value > 3);
+        optionHoraire(value, nbMed, Mdeb, Mcurant, nbRed, Rdeb, Rcurant, jourHoraire);
         break;
     case 3:
         do
         {
-            value = VuMedecin(nbMed, Mdeb, Mcurant);
-        } while (value < 0 || value > 4);
-        choixOption(value);
+            value = MenuMedecin(nbMed, Mdeb, Mcurant);
+        } while (value < 1 || value > 4);
+        optionMedecin(value);
+        break;
     case 4:
         //code
         break;
     case 5:
+        break;
+    case 6:
         free(Mdeb);
         free(Mcurant);
         free(Pdeb);
         free(Pcurant);
+        free(Rdeb);
+        free(Rcurant);
         return false;
     }
 
@@ -159,6 +187,6 @@ bool run()
     free(Pdeb);
     free(Pcurant);
     free(Rdeb);
-    // free(Rcurant);
+    free(Rcurant);
     return true;
 }
