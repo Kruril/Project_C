@@ -64,11 +64,19 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
     scanf("%s", tempon);
 }
 
+const char listJourSemain[] = {
+  "Lundi",
+  "Mardi",
+  "Mercredi",
+  "Jeudi",
+  "Vendredi",
+  "Samedi",
+  "Dimanche",
+};
+
 void horaireSemaine(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire)
 {
     int i;
-    char jourChar[9];
-    // Recherche du medecin
     Mcurant = Mdeb;
     for (i = 1; i < numMed; i++)
     {
@@ -81,40 +89,11 @@ void horaireSemaine(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire
 
     for (i = 1; i <= jourHoraire; i++)
     {
-        jourSemaine(i, jourChar);
-        printf(" %-9s|    %02d:00    |   %02d:00   |\n", jourChar, Mcurant->horaire.heureDeb[i],
+        printf(" %-9s|    %02d:00    |   %02d:00   |\n", listJourSemain[i - 1], Mcurant->horaire.heureDeb[i],
                Mcurant->horaire.heureFin[i]);
     }
 
     printf("\nAppuyer sur entrer pour revenir au menu principal");
     char tempon[20];
     scanf("%s", tempon);
-}
-
-void jourSemaine(int jour, char *jourChar)
-{
-    switch (jour)
-    {
-    case 1:
-        strcpy(jourChar, "Lundi");
-        break;
-    case 2:
-        strcpy(jourChar, "Mardi");
-        break;
-    case 3:
-        strcpy(jourChar, "Mercredi");
-        break;
-    case 4:
-        strcpy(jourChar, "Jeudi");
-        break;
-    case 5:
-        strcpy(jourChar, "Vendredi");
-        break;
-    case 6:
-        strcpy(jourChar, "Samedi");
-        break;
-    case 7:
-        strcpy(jourChar, "Dimanche");
-        break;
-    }
 }
