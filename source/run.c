@@ -143,10 +143,7 @@ bool run()
     // ***************************************************************************************************
 
     // Affichage du menu principal et Scan de l'option
-    do
-    {
-        option = MenuPrincipal();
-    } while (option < 1 || option > 6);
+    option = MenuPrincipal();
 
     switch (option)
     {
@@ -154,17 +151,11 @@ bool run()
         PrendRendVous(nbMed, Mdeb, Mcurant);
         break;
     case 2:
-        do
-        {
-            value = MenuHoraire();
-        } while (value < 1 || value > 3);
+        value = MenuHoraire();
         optionHoraire(value, nbMed, Mdeb, Mcurant, nbRed, Rdeb, Rcurant, jourHoraire);
         break;
     case 3:
-        do
-        {
-            value = MenuMedecin(nbMed, Mdeb, Mcurant);
-        } while (value < 1 || value > 4);
+        value = MenuMedecin(nbMed, Mdeb, Mcurant);
         optionMedecin(value);
         break;
     case 4:
@@ -179,6 +170,11 @@ bool run()
         free(Pcurant);
         free(Rdeb);
         free(Rcurant);
+
+        fclose(fMedecin);
+        fclose(fPatient);
+        fclose(fHoraire);
+        fclose(fRendezVous);
         return false;
     }
 
@@ -188,5 +184,10 @@ bool run()
     free(Pcurant);
     free(Rdeb);
     free(Rcurant);
+
+    fclose(fMedecin);
+    fclose(fPatient);
+    fclose(fHoraire);
+    fclose(fRendezVous);
     return true;
 }

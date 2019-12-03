@@ -1,12 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <unistd.h>
+#include "headers/commun.h"
 #include "headers/structure.h"
 #include "headers/medecin.h"
 
+char key;
 int MenuPrincipal()
 {
-    char option[20];
+    enableRawMode();
     system("clear");
     printf("-----------------------------------------------------------------------------------\n");
     printf("|                                                                                 |\n");
@@ -16,14 +19,16 @@ int MenuPrincipal()
     printf("|                                                                                 |\n");
     printf("-----------------------------------------------------------------------------------\n");
     printf("Numero de l'option : ");
-    scanf("%s",option);
-    system("clear");
-    return atoi(option);
-}
+    fflush(stdout);
 
-char value[20];
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > 6));
+    disableRawMode();
+    system("clear");
+    return atoi(&key);
+}
 int MenuMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
+    enableRawMode();
     listeMedecin(nbMed, Mdeb, Mcurant);
     printf("-----------------------------------------------------------------------------------\n");
     printf("|                                                                                 |\n");
@@ -32,20 +37,27 @@ int MenuMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
     printf("|                                                                                 |\n");
     printf("-----------------------------------------------------------------------------------\n");
     printf("Choix d'une option : ");
-    scanf("%s", value);
+    fflush(stdout);
+
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > 4));
+    disableRawMode();
     system("clear");
-    return atoi(value);
+    return atoi(&key);
 }
 
 int MenuHoraire()
 {
+    enableRawMode();
     printf("-----------------------------------------------------------------------------------\n");
     printf("|                                                                                 |\n");
     printf("|             1. Liste des rendez-vous      | 2. Horaire de la semaine            |\n");
     printf("|                                                                                 |\n");
     printf("-----------------------------------------------------------------------------------\n");
     printf("Choix d'une option : ");
-    scanf("%s", value);
+    fflush(stdout);
+
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > 3));
+    disableRawMode();
     system("clear");
-    return atoi(value);
+    return atoi(&key);
 }

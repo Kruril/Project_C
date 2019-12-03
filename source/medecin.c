@@ -2,8 +2,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <unistd.h>
+#include "headers/commun.h"
 #include "headers/structure.h"
 
+
+char key;
 void optionMedecin(int value)
 {
     if (value == 1)
@@ -28,23 +32,13 @@ void listeMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
 
 void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
-    char numMed[20];
-    int num;
+    enableRawMode();
 
     listeMedecin(nbMed, Mdeb, Mcurant);
-    printf("Numero du medecin pour prendre le rendez-vous?\n");
-    do
-    {
-        scanf("%s", numMed);
-        num = atoi(numMed);
-        if (num == nbMed + 1)
-        {
-            return;
-        }
-        if (num < 1 || num > nbMed)
-        {
-            printf("Numéro du medecin invalide recommencer\n");
-        }
+    printf("Numero du medecin pour prendre le rendez-vous?");
+    fflush(stdout);
 
-    } while (num < 1 || num > nbMed);
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed+1));
+    disableRawMode();
+    if (atoi(&key) == nbMed +1) return ;
 }

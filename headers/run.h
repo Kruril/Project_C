@@ -1,3 +1,3 @@
 #pragma once
 
-bool run();
+bool run(void);

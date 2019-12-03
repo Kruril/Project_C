@@ -1,43 +1,47 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
+#include "headers/commun.h"
 #include "headers/structure.h"
 #include "headers/medecin.h"
 
 void listeRendezvous(int, struct medecin *, struct medecin *, int, rendezvous *Rdeb, rendezvous *Rcurant);
 void horaireSemaine(int, struct medecin *, struct medecin *, int);
-void jourSemaine(int, char *);
 
+char key;
 void optionHoraire(int option, int nbMed, medecin *Mdeb, medecin *Mcurant, int nbRed,
                    rendezvous *Rdeb, rendezvous *Rcurant, int jourHoraire)
 {
     if (option == 3)
         return;
-    char valueChar[20];
-    int value;
 
-    do
-    {
+    enableRawMode();
+
+
         listeMedecin(nbMed, Mdeb, Mcurant);
         printf("Choisiser un medecin : ");
-        scanf("%s", valueChar);
-        value = atoi(valueChar);
+        fflush(stdout);
+
+        while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed));
+        disableRawMode();
         system("clear");
-    } while (value < 1 || value > nbMed);
 
     switch (option)
     {
     case 1:
-        listeRendezvous(value, Mdeb, Mcurant, nbRed, Rdeb, Rcurant);
+        listeRendezvous(atoi(&key), Mdeb, Mcurant, nbRed, Rdeb, Rcurant);
         break;
     case 2:
-        horaireSemaine(value, Mdeb, Mcurant, jourHoraire);
+        horaireSemaine(atoi(&key), Mdeb, Mcurant, jourHoraire);
         break;
     }
 }
 
+char key;
 void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, rendezvous *Rdeb, rendezvous *Rcurant)
 {
+    enableRawMode();
     int i;
     // Recherche du medecin
     Mcurant = Mdeb;
@@ -60,14 +64,26 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
         Rcurant = Rcurant->suivant;
     }
     printf("\nAppuyer sur entrer pour revenir au menu principal");
-    char tempon[20];
-    scanf("%s", tempon);
+    fflush(stdout);
+
+    while (read(STDIN_FILENO, &key, 1) == 1 && key != 10);
+    disableRawMode();
+    
 }
+const char *listJourSemaine[] = {
+    "Lundi",
+    "Mardi",
+    "Mercredi",
+    "Jeudi",
+    "Vendredi",
+    "Samedi",
+    "Dimanche",
+};
 
 void horaireSemaine(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire)
 {
+    enableRawMode();
     int i;
-    char jourChar[9];
     // Recherche du medecin
     Mcurant = Mdeb;
     for (i = 1; i < numMed; i++)
@@ -81,40 +97,12 @@ void horaireSemaine(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire
 
     for (i = 1; i <= jourHoraire; i++)
     {
-        jourSemaine(i, jourChar);
-        printf(" %-9s|    %02d:00    |   %02d:00   |\n", jourChar, Mcurant->horaire.heureDeb[i],
+        printf(" %-9s|    %02d:00    |   %02d:00   |\n", listJourSemaine[i - 1], Mcurant->horaire.heureDeb[i],
                Mcurant->horaire.heureFin[i]);
     }
-
     printf("\nAppuyer sur entrer pour revenir au menu principal");
-    char tempon[20];
-    scanf("%s", tempon);
-}
+    fflush(stdout);
 
-void jourSemaine(int jour, char *jourChar)
-{
-    switch (jour)
-    {
-    case 1:
-        strcpy(jourChar, "Lundi");
-        break;
-    case 2:
-        strcpy(jourChar, "Mardi");
-        break;
-    case 3:
-        strcpy(jourChar, "Mercredi");
-        break;
-    case 4:
-        strcpy(jourChar, "Jeudi");
-        break;
-    case 5:
-        strcpy(jourChar, "Vendredi");
-        break;
-    case 6:
-        strcpy(jourChar, "Samedi");
-        break;
-    case 7:
-        strcpy(jourChar, "Dimanche");
-        break;
-    }
+    while (read(STDIN_FILENO, &key, 1) == 1 && key != 10);
+    disableRawMode();
 }

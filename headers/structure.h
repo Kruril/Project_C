@@ -3,7 +3,7 @@
 typedef struct horaire
 {
     int heureDeb[8], heureFin[8];
-}horaire;
+} horaire;
 
 typedef struct medecin
 {
