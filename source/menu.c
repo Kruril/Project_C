@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <unistd.h>
+
 #include "headers/commun.h"
 #include "headers/structure.h"
 #include "headers/medecin.h"
+#include "headers/menu.h"
 
 char key;
 int MenuPrincipal()
@@ -14,7 +16,7 @@ int MenuPrincipal()
     printf("-----------------------------------------------------------------------------------\n");
     printf("|                                                                                 |\n");
     printf("|                 1. Prendre rendez-vous | 2. Voir les horaires                   |\n");
-    printf("|                 3. Liste medecin       | 4. Annulation d'un rendez-vous         |\n");
+    printf("|                 3. Medecin             | 4. Annulation d'un rendez-vous         |\n");
     printf("|                 5. Information logiciel| 6. Quitter le programme                |\n");
     printf("|                                                                                 |\n");
     printf("-----------------------------------------------------------------------------------\n");
@@ -26,10 +28,9 @@ int MenuPrincipal()
     system("clear");
     return atoi(&key);
 }
-int MenuMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
+int MenuMedecin(void)
 {
     enableRawMode();
-    listeMedecin(nbMed, Mdeb, Mcurant);
     printf("-----------------------------------------------------------------------------------\n");
     printf("|                                                                                 |\n");
     printf("|             1. Voir la liste des patients | 2. Ajouter un medecin               |\n");

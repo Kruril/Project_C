@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+
 #include "headers/structure.h"
 #include "headers/medecin.h"
 #include "headers/menu.h"
 #include "headers/horaires.h"
+#include "headers/run.h"
 
-bool run()
+bool run(void)
 {
     // Déclaration des variables
     int option, nbMed = 0, i, j, value, nbPat = 0, nbRed = 0, jourHoraire = 7;
@@ -67,15 +69,15 @@ bool run()
 
     while (!feof(fPatient))
     {
+        Psuivant = malloc(sizeof(patient));
         fscanf(fPatient, "%20s%10s%20s%11s%4d", Pcurant->prenom, Pcurant->numGSM, Pcurant->nomMedecin,
                Pcurant->idRegistre, &Pcurant->codePostal);
-        Psuivant = malloc(sizeof(patient));
         Pcurant->suivant = Psuivant;
         nbPat++;
-        Pcurant = Psuivant;
+        Pcurant = Pcurant->suivant;
         fscanf(fPatient, "%20s", Pcurant->nom);
     }
-
+    
     // Mise à Null du dernier element
     Pcurant = Pdeb;
     for (i = 1; i < nbPat; i++)
@@ -155,8 +157,8 @@ bool run()
         optionHoraire(value, nbMed, Mdeb, Mcurant, nbRed, Rdeb, Rcurant, jourHoraire);
         break;
     case 3:
-        value = MenuMedecin(nbMed, Mdeb, Mcurant);
-        optionMedecin(value);
+        value = MenuMedecin();
+        optionMedecin(value, nbPat, Pdeb, Pcurant, nbMed, Mdeb, Mcurant);
         break;
     case 4:
         //code
