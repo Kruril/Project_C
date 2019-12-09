@@ -62,7 +62,7 @@ void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
     do
     {
         date = EncodageDate(&jour, &mois, &annee);
-    } while (date == false);
+    } while (date == false || check_date(jour, mois, annee) == false);
 
     jourSemaine = DerterminationJour(jour, mois, annee);
 

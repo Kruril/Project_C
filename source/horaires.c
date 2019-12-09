@@ -50,16 +50,45 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
         Mcurant = Mcurant->suivant;
     }
 
+    // Date courante 
+    time_t now;
+    int jour, mois, annee;
+    time(&now);
+    struct tm *local = localtime(&now);
+    jour = local->tm_mday;
+    mois = local->tm_mon + 1;
+    annee = local->tm_year + 1900;
+    printf("%d/%d/%d\n", jour, mois, annee);
+
     printf("Rendez du medecin %-s : \n\n", Mcurant->nom);
-    printf("   Date    | Heure |        Patient        |\n");
-    printf("-----------|-------|-----------------------|\n");
+    printf("   Date    | Heure |        Patient        |                  Note                  |\n");
+    printf("-----------|-------|-----------------------|----------------------------------------|\n");
     Rcurant = Rdeb;
     for (i = 1; i <= nbRed; i++)
     {
         if (strcmp(Mcurant->nom, Rcurant->nomMedecin) == 0)
         {
-            printf("%02d/%02d/%4d | %02d:%02d | %-10s %-10s |\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
-                   Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient);
+            if (Rcurant->annee > annee)
+            {
+                printf("%02d/%02d/%4d | %02d:%02d | %-10s %-10s |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                    Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
+            }
+            else if (Rcurant->annee == annee)
+            {
+                if (Rcurant->mois > mois)
+                {
+                    printf("%02d/%02d/%4d | %02d:%02d | %-10s %-10s |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                           Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
+                }
+                else if (Rcurant->mois == mois)
+                {
+                    if (Rcurant->jour >= jour)
+                    {
+                        printf("%02d/%02d/%4d | %02d:%02d | %-10s %-10s |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                               Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
+                    }
+                }
+            }
         }
         Rcurant = Rcurant->suivant;
     }
@@ -205,4 +234,38 @@ int DerterminationJour(int jour, int mois, int an)
         return 0;
     }
     return jours[t.tm_wday];
+}
+
+bool check_date(int jour, int mois, int annee)
+{
+    //Date actuelle
+    time_t now;
+    int jourAct, moisAct, anneeAct;
+    time(&now);
+    struct tm *local = localtime(&now);
+    jourAct = local->tm_mday;
+    moisAct = local->tm_mon + 1;
+    anneeAct = local->tm_year + 1900;
+
+    if (annee > anneeAct)
+    {
+        return true;
+    }
+    else if (annee == anneeAct)
+    {
+        if (mois > moisAct)
+        {
+            return true;
+        }
+        else if (mois == moisAct)
+        {
+            if (jour >= jourAct)
+            {
+                return true;
+            }
+        }
+        
+    }
+    printf("Date anterieur à la date actuel\n");
+    return false;
 }

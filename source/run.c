@@ -107,6 +107,7 @@ bool run(void)
     {
         fscanf(fRendezVous, "%20s%20s%2d%2d%4d%2d%2d", Rcurant->nomPatient, Rcurant->prenomPatient,
                &Rcurant->jour, &Rcurant->mois, &Rcurant->annee, &Rcurant->heure, &Rcurant->minutes);
+        fgets(Rcurant->note,40, fRendezVous);
         Rsuivant = malloc(sizeof(rendezvous));
         Rcurant->suivant = Rsuivant;
         nbRed++;
