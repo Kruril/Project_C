@@ -268,4 +268,5 @@ bool check_date(int jour, int mois, int annee)
     }
     printf("Date anterieur à la date actuel\n");
     return false;
+    
 }
