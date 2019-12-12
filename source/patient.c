@@ -9,6 +9,10 @@
 #include "headers/commun.h"
 #include "headers/patient.h"
 
+/*
+Méthode qui va chercher le medecin voulut est passé son nom dans une 
+méthode qui affichera tout les patients de ce medecin
+*/
 void patient_de_medecin(int nbPat, patient *Pdeb, patient *Pcurant, 
                         int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
@@ -32,6 +36,10 @@ void patient_de_medecin(int nbPat, patient *Pdeb, patient *Pcurant,
     disableRawMode();
 }
 
+/*
+Méthode qui affiche tout les patients d'un medecin voulu
+elle affiche le nom et prenom du patient.
+*/
 void listepatient(const char *nomMedecin,int nbPat ,patient *Pdeb, patient *Pcurant)
 {
     system("clear");

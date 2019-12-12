@@ -8,7 +8,13 @@
 #include "headers/medecin.h"
 #include "headers/menu.h"
 
+//key est une variable global permetant de choisir le numéro souhaité
 char key;
+
+/*
+Méthode affichant le menu principal du programme elle retourne le 
+numéro de l'option choisi par l'utilisateur
+*/
 int MenuPrincipal()
 {
     enableRawMode();
@@ -28,6 +34,11 @@ int MenuPrincipal()
     system("clear");
     return atoi(&key);
 }
+
+/*
+Méthode affichant le menu de l'option 3 du menu principal
+elle retourne l'option choisi par l'utilisateur
+*/
 int MenuMedecin(void)
 {
     enableRawMode();
@@ -46,6 +57,10 @@ int MenuMedecin(void)
     return atoi(&key);
 }
 
+/*
+Méthode affichant le menu de l'option 2 du menu principal
+elle retourne l'option choisi par l'utilisateur
+*/
 int MenuHoraire()
 {
     enableRawMode();

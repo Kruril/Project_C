@@ -7,10 +7,17 @@
 #include "headers/commun.h"
 
 struct termios orig_termios;
+/*
+Désactivation du mode Raw du terminal
+*/
 void disableRawMode(void)
 {
     tcsetattr(STDIN_FILENO, TCSAFLUSH, &orig_termios);
 }
+
+/*
+Activation du mode Raw du terminal
+*/
 void enableRawMode(void)
 {
     tcgetattr(STDIN_FILENO, &orig_termios);

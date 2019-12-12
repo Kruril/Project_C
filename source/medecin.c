@@ -11,7 +11,15 @@
 #include "headers/patient.h"
 #include "headers/medecin.h"
 
+//key est une variable global permetant de choisir le numéro souhaité
 char key;
+
+/*
+Méthode qui va regarder quelle option a été choisi précedement et 
+transmetre les différente valeur utile pour soit voir les patients 
+d'un médecin soit ajouter un médecin soit voir les informations
+personnelles d'un medecin
+*/
 void optionMedecin(int value, int nbPat, patient *Pdeb, patient *Pcurant, int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
     switch (value)
@@ -28,6 +36,12 @@ void optionMedecin(int value, int nbPat, patient *Pdeb, patient *Pcurant, int nb
     }
 }
 
+/*
+Méthode qui permet d'afficher la liste des medecins présent 
+dans le cabinet. La méthode affiche le numéro du médecin 
+(qui permetra par la suite de selectionne le medecin), son 
+nom et sa spécialité.
+*/
 void listeMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
     int i;
@@ -42,6 +56,10 @@ void listeMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
     printf("\n");
 }
 
+/*
+Méthode qui va prendre les rendez-vous. elle fait appel a diéfferente 
+méthode comme la listeMedecin, horaireSemaine, ...
+*/
 void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
     enableRawMode();
@@ -71,6 +89,9 @@ void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
 
 }
 
+/*
+Méthode affichant les informations personnelles du médecin 
+*/
 void infoMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
 {
     enableRawMode();

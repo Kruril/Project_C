@@ -10,7 +10,14 @@
 #include "headers/medecin.h"
 #include "headers/horaires.h"
 
+//key est une variable global permetant de choisir le numéro souhaité
 char key;
+
+/*
+Méthode qui va demander de choisir un medecin en fonction de numéro choisi précedement
+la méthode va lancer la méthode qui affiche la liste de rendez-vous du medecin choisi
+ou son horaire de la semaine
+*/
 void optionHoraire(int option, int nbMed, medecin *Mdeb, medecin *Mcurant, int nbRed,
                    rendezvous *Rdeb, rendezvous *Rcurant, int jourHoraire)
 {
@@ -38,7 +45,10 @@ void optionHoraire(int option, int nbMed, medecin *Mdeb, medecin *Mcurant, int n
     }
 }
 
-char key;
+/*
+Méthode qui affiche la liste des rendez-vous d'un medecin précis tout les 
+rendez-vous dont la date est passé ne seront pas affichés
+*/
 void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, rendezvous *Rdeb, rendezvous *Rcurant)
 {
     enableRawMode();
@@ -98,6 +108,11 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
     while (read(STDIN_FILENO, &key, 1) == 1 && key != 10);
     disableRawMode();
 }
+
+/*
+Liste des jour de la semaine cette liste est appellé dans différents endroit 
+permettant d'affiché le jour voulu en fonction de l'indice passé
+*/
 const char *listJourSemaine[] = {
     "Lundi",
     "Mardi",
@@ -108,6 +123,11 @@ const char *listJourSemaine[] = {
     "Dimanche",
 };
 
+/*
+Méthode qui affiche l'horaire de la semaine d'un medecin choisi plutot
+elle affiche le jour (grace à la liste vu précedement), l'heure de début 
+du travail et son heure de fin
+*/
 void horaireSemaine(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire)
 {
     int i;
@@ -129,6 +149,10 @@ void horaireSemaine(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire
     }
 }
 
+/*
+Méthode qui va activer le mode Raw du terminal et par la suite permetre de
+quitter l'affichage de l'horaire du medecin
+*/
 void horairePropreMedecin(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire)
 {
     enableRawMode();
@@ -142,6 +166,12 @@ void horairePropreMedecin(int numMed, medecin *Mdeb, medecin *Mcurant, int jourH
     disableRawMode();
 }
 
+/*
+Méthode qui va regarder si la date que la personne encode est correctement 
+encodé 
+/!\ cette méthode ne verifie pas que la date entré soit entérieur à la 
+    date actuelle.
+*/
 bool EncodageDate(int *jour, int *mois, int *an)
 {
     char date[12], jourChar[3], moisChar[3], anChar[5];
@@ -220,6 +250,10 @@ bool EncodageDate(int *jour, int *mois, int *an)
     }
 }
 
+/*
+Méthode qui va permettre de déterminer le jour de la semaine qui est entré 
+par l'utilisateur 
+*/
 int DerterminationJour(int jour, int mois, int an)
 {
     struct tm t;
@@ -236,6 +270,10 @@ int DerterminationJour(int jour, int mois, int an)
     return jours[t.tm_wday];
 }
 
+/*
+Méthode qui va vériffier que le jour entré est bien soit le jour actuel
+soit un jour suivant le jour actuel
+*/
 bool check_date(int jour, int mois, int annee)
 {
     //Date actuelle
@@ -268,5 +306,4 @@ bool check_date(int jour, int mois, int annee)
     }
     printf("Date anterieur à la date actuel\n");
     return false;
-    
 }
