@@ -159,7 +159,7 @@ bool run(void)
         break;
     case 3:
         value = MenuMedecin();
-        optionMedecin(value, nbPat, Pdeb, Pcurant, nbMed, Mdeb, Mcurant);
+        optionMedecin(value, nbPat, Pdeb, Pcurant, nbMed, Mdeb, Mcurant, fMedecin, fHoraire);
         break;
     case 4:
         //code

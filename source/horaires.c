@@ -30,7 +30,7 @@ void optionHoraire(int option, int nbMed, medecin *Mdeb, medecin *Mcurant, int n
     printf("Choisiser un medecin : ");
     fflush(stdout);
 
-    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed));
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed +1));
     disableRawMode();
     system("clear");
 
@@ -40,7 +40,7 @@ void optionHoraire(int option, int nbMed, medecin *Mdeb, medecin *Mcurant, int n
         listeRendezvous(atoi(&key), Mdeb, Mcurant, nbRed, Rdeb, Rcurant);
         break;
     case 2:
-        horairePropreMedecin(atoi(&key), Mdeb, Mcurant, jourHoraire);
+        horairePropreMedecin(atoi(&key), Mdeb, Mcurant, jourHoraire, nbMed);
         break;
     }
 }
@@ -153,10 +153,11 @@ void horaireSemaine(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire
 Méthode qui va activer le mode Raw du terminal et par la suite permetre de
 quitter l'affichage de l'horaire du medecin
 */
-void horairePropreMedecin(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire)
+void horairePropreMedecin(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire, int nbMed)
 {
+    if (numMed == nbMed +1) 
+        return;
     enableRawMode();
-
     horaireSemaine(numMed, Mdeb, Mcurant, jourHoraire);
 
     printf("\nAppuyer sur entrer pour revenir au menu principal");

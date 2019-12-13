@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctype.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 #include "headers/commun.h"
 #include "headers/structure.h"
@@ -20,7 +20,8 @@ transmetre les différente valeur utile pour soit voir les patients
 d'un médecin soit ajouter un médecin soit voir les informations
 personnelles d'un medecin
 */
-void optionMedecin(int value, int nbPat, patient *Pdeb, patient *Pcurant, int nbMed, medecin *Mdeb, medecin *Mcurant)
+void optionMedecin(int value, int nbPat, patient *Pdeb, patient *Pcurant, int nbMed, medecin *Mdeb, medecin *Mcurant, FILE *fMedecin,
+                    FILE *fHoraire)
 {
     switch (value)
     {
@@ -29,6 +30,7 @@ void optionMedecin(int value, int nbPat, patient *Pdeb, patient *Pcurant, int nb
         break;
 
     case 2:
+        addMedecin(nbMed, Mdeb, Mcurant, fMedecin, fHoraire);
         break;
     case 3:
         infoMedecin(nbMed, Mdeb, Mcurant);
@@ -70,7 +72,8 @@ void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
     printf("Numero du medecin pour prendre le rendez-vous?");
     fflush(stdout);
 
-    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed+1));
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed + 1))
+        ;
     disableRawMode();
     if (atoi(&key) == nbMed + 1)
         return;
@@ -84,9 +87,7 @@ void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
 
     jourSemaine = DerterminationJour(jour, mois, annee);
 
-    printf("Horaire disponible pour le %s %02d/%02d/%4d : \n", listJourSemaine[jourSemaine-1], jour, mois, annee);
-
-
+    printf("Horaire disponible pour le %s %02d/%02d/%4d : \n", listJourSemaine[jourSemaine - 1], jour, mois, annee);
 }
 
 /*
@@ -99,24 +100,220 @@ void infoMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
     listeMedecin(nbMed, Mdeb, Mcurant);
     printf("Choisiser un medecin : ");
     fflush(stdout);
-    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed + 1));
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed + 1))
+        ;
     Mcurant = Mdeb;
     for (int i = 1; i < atoi(&key); i++)
     {
         Mcurant = Mcurant->suivant;
     }
-    
+
     system("clear");
 
     printf("Fiche technique de medecin : %-s\n\n", Mcurant->nom);
     printf("|-----------------------------------------------|\n");
-    printf("|Domaine de la medecine : %-15s       |\n",Mcurant->specialite);
+    printf("|Domaine de la medecine : %-15s       |\n", Mcurant->specialite);
     printf("|-----------------------------------------------|\n");
-    printf("|Num. pour le remboursement mutuel : %-s |\n",Mcurant->numInami);
+    printf("|Num. pour le remboursement mutuel : %-s |\n", Mcurant->numInami);
     printf("|-----------------------------------------------|\n");
     printf("|Numéro de contact : %-16s           |\n", Mcurant->numGSM);
     printf("|-----------------------------------------------|\n\n");
     disableRawMode();
-    horairePropreMedecin(atoi(&key),Mdeb,Mcurant,7);
+    horairePropreMedecin(atoi(&key), Mdeb, Mcurant, 7, nbMed);
+}
 
+/*
+Méthode qui va demander les informations d'un medecin pour pouvoir
+l'ajouter au medecin du cabinet. Il est tout de fois impossible d'ajouter
+plus de 8 medecin. Si on essaie de rajouter un medecin de plus un 
+message d'erreur nous dira que le nombre de medecin que peut acceuillir 
+le batiment est complet. 
+*/
+void addMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant, FILE *fMedecin, FILE *fHoraire)
+{
+    char nom[21], specialite[21], numInami[11], numGSM[11];
+    horaire horaire;
+
+    if (nbMed >= 8)
+    {
+        printf("Impossible de rajouter un medecin le batiment est plein\n");
+    }
+    else
+    {
+        // Nom du medecin
+        printf("Entrer le nom du medecin : ");
+        fgets(nom, 22, stdin);
+        remove_jumpLine(nom, 22);
+        //Specialite
+        printf("\nEntrer son domaine : ");
+        fgets(specialite, 22, stdin);
+        remove_jumpLine(specialite, 22);
+
+        do
+        {
+            printf("\nEntrer le numero inami (xxxx-xxxxx): ");
+            fgets(numInami, 12, stdin);
+            numInami[10] = '\0';
+        } while (check_Inami(numInami, nbMed, Mdeb, Mcurant) == false);
+
+        do
+        {
+            printf("\nEntrer le numero de GSM (04xxxxxxxx): ");
+            fgets(numGSM, 12, stdin);
+            numGSM[10] = '\0';
+        } while (check_GSM(numGSM) == false);
+
+        printf(" \n/!\\ L'HEURE DE DEBUT ET DE FIN SONT DES HEURES PILE /!\\");
+
+        char heureDeb[10], heureFin[10];
+
+        for (int i = 1; i <= 7; i++)
+        {
+            do
+            {
+                printf("\nEntrer l'heure du début (x ou xx) pour %s : ", listJourSemaine[i - 1]);
+                scanf("%s", heureDeb);
+            } while (atoi(heureDeb) == 0 || strlen(heureDeb) > 2);
+            horaire.heureDeb[i] = atoi(heureDeb);
+
+            do
+            {
+                printf("\nEntrer l'heure du Fin (x ou xx) pour %s : ", listJourSemaine[i - 1]);
+                scanf("%s", heureFin);
+            } while (atoi(heureFin) == 0 || strlen(heureFin) > 2);
+            horaire.heureFin[i] = atoi(heureFin);
+        }
+
+        validationAddMedecin(nom, specialite, numInami, numGSM, &horaire, nbMed, Mdeb, Mcurant, fMedecin, fHoraire);
+    }
+}
+
+/*
+Méthode qui vérifie que le num Inami encoder lors de l'ajout d'un medecin
+n'est pas déjà encoder dans la base de données
+*/
+bool check_Inami(const char *numInami, int nbMed, medecin *Mdeb, medecin *Mcurant)
+{
+    Mcurant = Mdeb;
+    if (numInami[4] != '-')
+        return false;
+    for (int i = 1; i < nbMed; i++)
+    {
+        if (strcmp(numInami, Mcurant->numInami) == 0)
+        {
+            return false;
+        }
+        Mcurant = Mcurant->suivant;
+    }
+    return true;
+}
+
+/*
+Transforme le numero en chiffre si il contient des lettres la valeur 
+sera de 0 la méthode renvoie alors false sinon c'est qu'il a que des 
+chiffres alors il renvoie true
+*/
+bool check_GSM(const char *numGSM)
+{
+    if (numGSM[0] != '0' || numGSM[1] != '4')
+        return false;
+    if (atoi(numGSM) == 0)
+        return false;
+    return true;
+}
+
+/*
+Méthode qui affiche toutes les inforamtions du nouveau medecin et demande 
+à l'utilisateur si oui ou non il veut enregistrer les informations. SI oui 
+le nouveau medecin sera ajouter à la liste des medecin du cabinet
+*/
+void validationAddMedecin(const char *nom, const char *specialite, const char *numInami, const char *numGSM,
+                          horaire *horaire, int nbMed, medecin *Mdeb, medecin *Mcurant, FILE *fMedecin, FILE *fHoraire)
+{
+    system("clear");
+    printf("|-----------------------------------------------|\n");
+    printf("|------Information sur le nouveau medecin-------|\n");
+    printf("|-----------------------------------------------|\n");
+    printf("|Nom du nouveau medecin :  %-21s|\n", nom);
+    printf("|-----------------------------------------------|\n");
+    printf("|Domaine du nouveau medecin : %-11s       |\n", specialite);
+    printf("|-----------------------------------------------|\n");
+    printf("|Num. pour le remboursement mutuel : %-s |\n", numInami);
+    printf("|-----------------------------------------------|\n");
+    printf("|Numéro de contact : %-16s           |\n", numGSM);
+    printf("|-----------------------------------------------|\n");
+
+    printf("|       Jour      |  Heure debut  |  Heure fin  |\n");
+    printf("|-----------------|---------------|-------------|\n");
+
+    for (int i = 1; i <= 7; i++)
+    {
+        printf("|      %-9s  |     %02d:00     |    %02d:00    |\n", listJourSemaine[i - 1], horaire->heureDeb[i],
+               horaire->heureFin[i]);
+    }
+    printf("|-----------------------------------------------|\n\n");
+
+    enableRawMode();
+    printf("Voulez-vous valider l'ajout du medecin ? \n 1. OUI\n 2. NON");
+    fflush(stdout);
+
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > 2));
+    disableRawMode();
+
+    if (atoi(&key) == 1)
+        add_medecin_to_list(nom, specialite, numInami, numGSM, horaire,nbMed, Mdeb, Mcurant, fMedecin, fHoraire);
+}
+
+/*
+Méthode qui supprime le saut de lignes à la fin d'une chaine de caractere
+lu via un fgets
+*/
+void remove_jumpLine(char *valeur, int tailleMax)
+{
+    for (int i = 0; i < tailleMax; i++)
+    {
+        if (valeur[i] == '\n')
+        {
+            valeur[i] = '\0';
+            break;
+        }
+    }
+}
+
+/*
+Méthode qui ajoute à la fin de la liste chainée le nouveau medecin 
+*/
+void add_medecin_to_list(const char *nom, const char *specialite, const char *numInami, const char *numGSM,
+                         horaire *horaire, int nbMed, medecin *Mdeb, medecin *Mcurant, FILE *fMedecin, FILE *fHoraire)
+{
+    medecin *MNouveau;
+    // Aller au dernier medecin
+    Mcurant = Mdeb;
+    for (int i = 1; i < nbMed; i++)
+    {
+        Mcurant = Mcurant->suivant;
+    }
+
+    //Ajout à la liste chainée du programme actuel
+    MNouveau = malloc(sizeof(medecin));
+    Mcurant->suivant = MNouveau;
+    Mcurant = MNouveau;
+    Mcurant->suivant = NULL;
+    strcpy(Mcurant->nom, nom);
+    strcpy(Mcurant->specialite, specialite);
+    strcpy(Mcurant->numInami, numInami);
+    strcpy(Mcurant->numGSM, numGSM);
+    Mcurant->horaire = *horaire;
+
+    //Ajout dans le fichier de données fMedecin
+    fprintf(fMedecin,"%-20s%-20s%10s %10s\n",Mcurant->nom, Mcurant->specialite,Mcurant->numInami,Mcurant->numGSM);
+
+    //Ajout dans le fichier de données fHoraire
+    fprintf(fHoraire,"%s\n",Mcurant->nom);
+    for (int i = 1; i <= 7; i++)
+    {
+        fprintf(fHoraire,"%02d%02d\n",Mcurant->horaire.heureDeb[i], Mcurant->horaire.heureFin[i]);
+    }
+    
+    
 }
