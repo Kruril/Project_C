@@ -30,7 +30,8 @@ void optionHoraire(int option, int nbMed, medecin *Mdeb, medecin *Mcurant, int n
     printf("Choisiser un medecin : ");
     fflush(stdout);
 
-    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed +1));
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > nbMed + 1))
+        ;
     disableRawMode();
     system("clear");
 
@@ -60,7 +61,7 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
         Mcurant = Mcurant->suivant;
     }
 
-    // Date courante 
+    // Date courante
     time_t now;
     int jour, mois, annee;
     time(&now);
@@ -71,8 +72,8 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
     printf("%d/%d/%d\n", jour, mois, annee);
 
     printf("Rendez du medecin %-s : \n\n", Mcurant->nom);
-    printf("   Date    | Heure |        Patient        |                  Note                  |\n");
-    printf("-----------|-------|-----------------------|----------------------------------------|\n");
+    printf("   Date    | Heure |             Patient             |                  Note                  |\n");
+    printf("-----------|-------|---------------------------------|----------------------------------------|\n");
     Rcurant = Rdeb;
     for (i = 1; i <= nbRed; i++)
     {
@@ -80,21 +81,21 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
         {
             if (Rcurant->annee > annee)
             {
-                printf("%02d/%02d/%4d | %02d:%02d | %-10s %-10s |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
-                    Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
+                printf("%02d/%02d/%4d | %02d:%02d |   %-13s %-13s   |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                       Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
             }
             else if (Rcurant->annee == annee)
             {
                 if (Rcurant->mois > mois)
                 {
-                    printf("%02d/%02d/%4d | %02d:%02d | %-10s %-10s |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                    printf("%02d/%02d/%4d | %02d:%02d |   %-13s %-13s   |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
                            Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
                 }
                 else if (Rcurant->mois == mois)
                 {
                     if (Rcurant->jour >= jour)
                     {
-                        printf("%02d/%02d/%4d | %02d:%02d | %-10s %-10s |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                        printf("%02d/%02d/%4d | %02d:%02d |   %-13s %-13s   |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
                                Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
                     }
                 }
@@ -105,7 +106,8 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
     printf("\nAppuyer sur entrer pour revenir au menu principal");
     fflush(stdout);
 
-    while (read(STDIN_FILENO, &key, 1) == 1 && key != 10);
+    while (read(STDIN_FILENO, &key, 1) == 1 && key != 10)
+        ;
     disableRawMode();
 }
 
@@ -155,7 +157,7 @@ quitter l'affichage de l'horaire du medecin
 */
 void horairePropreMedecin(int numMed, medecin *Mdeb, medecin *Mcurant, int jourHoraire, int nbMed)
 {
-    if (numMed == nbMed +1) 
+    if (numMed == nbMed + 1)
         return;
     enableRawMode();
     horaireSemaine(numMed, Mdeb, Mcurant, jourHoraire);
@@ -163,7 +165,8 @@ void horairePropreMedecin(int numMed, medecin *Mdeb, medecin *Mcurant, int jourH
     printf("\nAppuyer sur entrer pour revenir au menu principal");
     fflush(stdout);
 
-    while (read(STDIN_FILENO, &key, 1) == 1 && key != 10);
+    while (read(STDIN_FILENO, &key, 1) == 1 && key != 10)
+        ;
     disableRawMode();
 }
 
@@ -303,7 +306,6 @@ bool check_date(int jour, int mois, int annee)
                 return true;
             }
         }
-        
     }
     printf("Date anterieur à la date actuel\n");
     return false;

@@ -151,7 +151,7 @@ bool run(void)
     switch (option)
     {
     case 1:
-        PrendRendVous(nbMed, Mdeb, Mcurant);
+        PrendRendVous(nbMed, Mdeb, Mcurant, nbRed, Rdeb, Rcurant, nbPat, Pdeb, Pcurant);
         break;
     case 2:
         value = MenuHoraire();

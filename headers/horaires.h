@@ -1,4 +1,5 @@
 #pragma once
+#include <stdbool.h>
 
 void optionHoraire(int, int, struct medecin *, struct medecin *, int, struct rendezvous *, struct rendezvous *,int);
 void listeRendezvous(int, struct medecin *, struct medecin *, int, rendezvous *Rdeb, rendezvous *Rcurant);

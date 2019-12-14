@@ -21,7 +21,7 @@ d'un médecin soit ajouter un médecin soit voir les informations
 personnelles d'un medecin
 */
 void optionMedecin(int value, int nbPat, patient *Pdeb, patient *Pcurant, int nbMed, medecin *Mdeb, medecin *Mcurant, FILE *fMedecin,
-                    FILE *fHoraire)
+                   FILE *fHoraire)
 {
     switch (value)
     {
@@ -62,11 +62,12 @@ void listeMedecin(int nbMed, medecin *Mdeb, medecin *Mcurant)
 Méthode qui va prendre les rendez-vous. elle fait appel a diéfferente 
 méthode comme la listeMedecin, horaireSemaine, ...
 */
-void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
+void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant, int nbRed, rendezvous *Rdeb, rendezvous *Rcurant, int nbPat, patient *Pdeb, patient *Pcurant)
 {
     enableRawMode();
     int jour, mois, annee, jourSemaine;
     bool date = false;
+    rendezvous *rdv;
 
     listeMedecin(nbMed, Mdeb, Mcurant);
     printf("Numero du medecin pour prendre le rendez-vous?");
@@ -88,6 +89,124 @@ void PrendRendVous(int nbMed, medecin *Mdeb, medecin *Mcurant)
     jourSemaine = DerterminationJour(jour, mois, annee);
 
     printf("Horaire disponible pour le %s %02d/%02d/%4d : \n", listJourSemaine[jourSemaine - 1], jour, mois, annee);
+
+    rdvPrecis(atoi(&key), Mdeb, Mcurant, nbRed, Rdeb, Rcurant, jour, mois, annee);
+
+    int heure, min, heuredeb, heurefin, i;
+    char idRegistre[20], heureChar[10], minChar[10];
+
+    Mcurant = Mdeb;
+    for (i = 1; i < atoi(&key); i++)
+    {
+        Mcurant = Mcurant->suivant;
+    }
+
+    heuredeb = Mcurant->horaire.heureDeb[jourSemaine];
+    heurefin = Mcurant->horaire.heureFin[jourSemaine];
+    while (true)
+    {
+        printf("%02dh - %02dh  choisissez un heure comprise entre les deux heures proposé ulterieurement \n\n ", heuredeb, heurefin);
+
+        do
+        {
+            fgets(heureChar, 10, stdin);
+        } while (atoi(heureChar) == 0 || strlen(heureChar) > 3);
+        heure = atoi(heureChar);
+        fflush(stdin);
+
+        if (heure < heuredeb || heure > heurefin)
+        {
+            printf("heure invalide\n");
+            continue;
+        }
+        printf("attention vueillez prendre un rendez-vous les heures pile (0) ou les demi heure(30) \n\n");
+
+        do
+        {
+            fgets(minChar, 10, stdin);
+            if (strlen(minChar) == 2 && (!(minChar[0] >= 'a') || !(minChar[0] <= 'z')) &&
+                (!(minChar[0] >= 'A') || !(minChar[0] <= 'Z')))
+                break;
+
+            if (atoi(minChar) != 30)
+            {
+                printf("choisissez les heures pile (0) ou les demi heure(30)\n");
+            }
+        } while (atoi(minChar) == 0 || strlen(minChar) > 3 || atoi(minChar) != 30);
+        min = atoi(minChar);
+        fflush(stdin);
+
+        printf("vous avez choisis l'heure suivante : %02d h %02d \n\n", heure, min);
+        Mcurant = Mdeb;
+        for (i = 1; i < atoi(&key); i++)
+        {
+            Mcurant = Mcurant->suivant;
+        }
+        if (!estLibre(Mcurant, annee, mois, jour, heure, min, nbRed, Rdeb, Rcurant))
+        {
+            printf("cette heure est déjà occupée \n");
+            continue;
+        }
+        listepatient(Mcurant->nom, nbPat, Pdeb, Pcurant);
+
+        printf("entrez l'id du patient \n");
+
+        do
+        {
+            fgets(idRegistre, 20, stdin);
+
+            idRegistre[11] = '\0';
+            if (!estPatient(Mcurant->nom, idRegistre, nbPat, Pdeb, Pcurant))
+            {
+                printf("patient incorrect \n");
+            }
+
+        } while (!estPatient(Mcurant->nom, idRegistre, nbPat, Pdeb, Pcurant));
+
+        Pcurant = Pdeb;
+        for (i = 1; i < nbPat; i++)
+        {
+            Pcurant = Pcurant->suivant;
+            if (strcmp(Pcurant->idRegistre, idRegistre) == 0)
+            {
+                break;
+            }
+        }
+        rdv = malloc(sizeof(rendezvous));
+        strcpy(rdv->nomPatient, Pcurant->nom);
+        strcpy(rdv->prenomPatient, Pcurant->prenom);
+        strcpy(rdv->nomMedecin, Mcurant->nom);
+        rdv->jour = jour;
+        rdv->mois = mois;
+        rdv->annee = annee;
+        rdv->heure = heure;
+        rdv->minutes = min;
+        printf(" décrivez la raison de la visite en bref \n");
+        fgets(rdv->note, 42, stdin);
+        rdv->suivant = NULL;
+        i = 0;
+        while (rdv->note[i] != '\n')
+        {
+            i++;
+        }
+        rdv->note[i] = '\0';
+
+        break;
+    }
+    Rcurant = Rdeb;
+    for (i = 1; i < nbRed; i++)
+    {
+        Rcurant = Rcurant->suivant;
+    }
+    Rcurant->suivant = rdv;
+    enregistrer(rdv);
+
+    printf("\nAppuyer sur entrer pour revenir au menu principal");
+    fflush(stdout);
+
+    while (read(STDIN_FILENO, &key, 1) == 1 && key != 10)
+        ;
+    disableRawMode();
 }
 
 /*
@@ -257,11 +376,12 @@ void validationAddMedecin(const char *nom, const char *specialite, const char *n
     printf("Voulez-vous valider l'ajout du medecin ? \n 1. OUI\n 2. NON");
     fflush(stdout);
 
-    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > 2));
+    while (read(STDIN_FILENO, &key, 1) == 1 && (atoi(&key) < 1 || atoi(&key) > 2))
+        ;
     disableRawMode();
 
     if (atoi(&key) == 1)
-        add_medecin_to_list(nom, specialite, numInami, numGSM, horaire,nbMed, Mdeb, Mcurant, fMedecin, fHoraire);
+        add_medecin_to_list(nom, specialite, numInami, numGSM, horaire, nbMed, Mdeb, Mcurant, fMedecin, fHoraire);
 }
 
 /*
@@ -306,14 +426,73 @@ void add_medecin_to_list(const char *nom, const char *specialite, const char *nu
     Mcurant->horaire = *horaire;
 
     //Ajout dans le fichier de données fMedecin
-    fprintf(fMedecin,"%-20s%-20s%10s %10s\n",Mcurant->nom, Mcurant->specialite,Mcurant->numInami,Mcurant->numGSM);
+    fprintf(fMedecin, "%-20s%-20s%10s %10s\n", Mcurant->nom, Mcurant->specialite, Mcurant->numInami, Mcurant->numGSM);
 
     //Ajout dans le fichier de données fHoraire
-    fprintf(fHoraire,"%s\n",Mcurant->nom);
+    fprintf(fHoraire, "%s\n", Mcurant->nom);
     for (int i = 1; i <= 7; i++)
     {
-        fprintf(fHoraire,"%02d%02d\n",Mcurant->horaire.heureDeb[i], Mcurant->horaire.heureFin[i]);
+        fprintf(fHoraire, "%02d%02d\n", Mcurant->horaire.heureDeb[i], Mcurant->horaire.heureFin[i]);
     }
-    
-    
+}
+
+void enregistrer(rendezvous *rdv)
+{
+    FILE *fres;
+    fres = fopen("Save/rendez_vous.res", "a+");
+
+    fprintf(fres, "%-20s%-20s%-20s%2d%2d%4d %02d%02d %-40s\n", rdv->nomMedecin, rdv->nomPatient, rdv->prenomPatient, rdv->jour,
+            rdv->mois, rdv->annee, rdv->heure, rdv->minutes, rdv->note);
+
+    fclose(fres);
+}
+bool estLibre(medecin *medecin, int annee, int mois, int jour, int heure, int min, int nbRed, rendezvous *Rdeb, rendezvous *Rcurant)
+{
+    int i;
+
+    Rcurant = Rdeb;
+    for (i = 1; i <= nbRed; i++)
+    {
+
+        if (strcmp(medecin->nom, Rcurant->nomMedecin) == 0)
+        {
+
+            if ((Rcurant->annee == annee) && (Rcurant->mois == mois) && (Rcurant->jour == jour) && (Rcurant->heure == heure) && (Rcurant->minutes == min))
+            {
+                return false;
+            }
+        }
+        Rcurant = Rcurant->suivant;
+    }
+
+    return true;
+}
+
+void rdvPrecis(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, rendezvous *Rdeb, rendezvous *Rcurant, int jour, int mois, int annee)
+{
+
+    int i;
+    Mcurant = Mdeb;
+    for (i = 1; i < numMed; i++)
+    {
+        Mcurant = Mcurant->suivant;
+    }
+
+    printf("Rendez du medecin %-s : \n\n", Mcurant->nom);
+    printf("   Date    | Heure |             Patient             |                  Note                  |\n");
+    printf("-----------|-------|---------------------------------|----------------------------------------|\n");
+    Rcurant = Rdeb;
+    for (i = 1; i <= nbRed; i++)
+    {
+        if (strcmp(Mcurant->nom, Rcurant->nomMedecin) == 0)
+        {
+            if ((Rcurant->annee == annee) && (Rcurant->mois == mois) && (Rcurant->jour == jour))
+            {
+                printf("%02d/%02d/%4d | %02d:%02d |   %-13s %-13s   |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                       Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
+            }
+        }
+        Rcurant = Rcurant->suivant;
+    }
+    printf("\n");
 }
