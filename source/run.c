@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <stdbool.h>
 
 #include "headers/structure.h"
@@ -105,8 +106,8 @@ bool run(void)
 
     while (!feof(fRendezVous))
     {
-        fscanf(fRendezVous, "%20s%20s%2d%2d%4d%2d%2d", Rcurant->nomPatient, Rcurant->prenomPatient,
-               &Rcurant->jour, &Rcurant->mois, &Rcurant->annee, &Rcurant->heure, &Rcurant->minutes);
+        fscanf(fRendezVous, "%20s%20s%2d%2d%4d %2d%2d", Rcurant->nomPatient, Rcurant->prenomPatient, 
+                &Rcurant->jour, &Rcurant->mois, &Rcurant->annee, &Rcurant->heure, &Rcurant->minutes);
         fgets(Rcurant->note,40, fRendezVous);
         Rsuivant = malloc(sizeof(rendezvous));
         Rcurant->suivant = Rsuivant;
@@ -147,7 +148,7 @@ bool run(void)
 
     // Affichage du menu principal et Scan de l'option
     option = MenuPrincipal();
-
+    char key;
     switch (option)
     {
     case 1:
@@ -162,9 +163,15 @@ bool run(void)
         optionMedecin(value, nbPat, Pdeb, Pcurant, nbMed, Mdeb, Mcurant, fMedecin, fHoraire);
         break;
     case 4:
-        //code
+        MenuAnnulation(nbMed, Mdeb, Mcurant, nbRed, Rdeb, Rcurant);
         break;
     case 5:
+        system("clear");
+        system("cat info.txt");
+        printf("\nAppuyer sur entrer pour revenir au menu principal");
+        fflush(stdout);
+
+        while (read(STDIN_FILENO, &key, 1) == 1 && key != 10);
         break;
     case 6:
         free(Mdeb);

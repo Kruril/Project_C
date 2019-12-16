@@ -69,7 +69,6 @@ void listeRendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, ren
     jour = local->tm_mday;
     mois = local->tm_mon + 1;
     annee = local->tm_year + 1900;
-    printf("%d/%d/%d\n", jour, mois, annee);
 
     printf("Rendez du medecin %-s : \n\n", Mcurant->nom);
     printf("   Date    | Heure |             Patient             |                  Note                  |\n");
@@ -181,7 +180,6 @@ bool EncodageDate(int *jour, int *mois, int *an)
     char date[12], jourChar[3], moisChar[3], anChar[5];
     int depMois = 0, depAn = 0, i = 0;
     printf("Entrer date (DD/MM/YYYY): ");
-    // fflush(stdout);
     fgets(date, 15, stdin);
 
     if (date[2] == '/' && date[5] == '/' && date[10] == '\n')
@@ -309,4 +307,61 @@ bool check_date(int jour, int mois, int annee)
     }
     printf("Date anterieur à la date actuel\n");
     return false;
+}
+
+/*
+Méthode qui affiche la liste des rendez-vous d'un medecin précis tout les 
+rendez-vous dont la date est passé ne seront pas affichés pour pouvoir les annullers
+*/
+void listeAnnulationrendezvous(int numMed, medecin *Mdeb, medecin *Mcurant, int nbRed, rendezvous *Rdeb, rendezvous *Rcurant)
+{
+    int i;
+    // Recherche du medecin
+    Mcurant = Mdeb;
+    for (i = 1; i < numMed; i++)
+    {
+        Mcurant = Mcurant->suivant;
+    }
+
+    // Date courante
+    time_t now;
+    int jour, mois, annee;
+    time(&now);
+    struct tm *local = localtime(&now);
+    jour = local->tm_mday;
+    mois = local->tm_mon + 1;
+    annee = local->tm_year + 1900;
+
+    printf("Rendez du medecin %-s : \n\n", Mcurant->nom);
+    printf("   Date    | Heure |             Patient             |                  Note                  |\n");
+    printf("-----------|-------|---------------------------------|----------------------------------------|\n");
+    Rcurant = Rdeb;
+    for (i = 1; i <= nbRed; i++)
+    {
+        if (strcmp(Mcurant->nom, Rcurant->nomMedecin) == 0)
+        {
+            if (Rcurant->annee > annee)
+            {
+                printf("%02d/%02d/%4d | %02d:%02d |   %-13s %-13s   |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                       Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
+            }
+            else if (Rcurant->annee == annee)
+            {
+                if (Rcurant->mois > mois)
+                {
+                    printf("%02d/%02d/%4d | %02d:%02d |   %-13s %-13s   |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                           Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
+                }
+                else if (Rcurant->mois == mois)
+                {
+                    if (Rcurant->jour >= jour)
+                    {
+                        printf("%02d/%02d/%4d | %02d:%02d |   %-13s %-13s   |%40s|\n", Rcurant->jour, Rcurant->mois, Rcurant->annee,
+                               Rcurant->heure, Rcurant->minutes, Rcurant->nomPatient, Rcurant->prenomPatient, Rcurant->note);
+                    }
+                }
+            }
+        }
+        Rcurant = Rcurant->suivant;
+    }
 }

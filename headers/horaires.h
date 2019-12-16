@@ -9,3 +9,4 @@ bool EncodageDate(int *, int *, int *);
 int DerterminationJour(int, int, int);
 const char *listJourSemaine[7];
 bool check_date(int, int, int);
+void listeAnnulationrendezvous(int, struct medecin *, struct medecin *, int, rendezvous *Rdeb, rendezvous *Rcurant);
